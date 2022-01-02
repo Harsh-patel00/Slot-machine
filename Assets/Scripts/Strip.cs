@@ -122,17 +122,23 @@ public class Strip : MonoBehaviour
         return stripItemsDict[itemPosOnstrip];
     }
 
+    /// <summary>
+    /// Start spinning based on random index
+    /// </summary>
+    /// <param name="landingPoints"> Matrix with random index </param>
     public void StartSpinning(int[,] landingPoints)
     {
-        //print("start spinning... : " + id +
-        //    ", Landing pts : " + landingPoints[id.x, id.y]);
-
+        // Only start spinning if strip's not rotating
         if (!isRotating)
             StartCoroutine(Spin(landingPoints[id.x, id.y]));
         else
             print("Wait till all spins are completed.");
     }
-    
+
+    /// <summary>
+    /// Start spinning based on names
+    /// </summary>
+    /// <param name="landingNames"> Item names matrix that is to be displayed </param>
     public void StartSpinning(string[,] landingNames)
     {
         //print("start spinning... : " + id +
@@ -156,7 +162,7 @@ public class Strip : MonoBehaviour
         // Get position on strip from dict. using landing index
         float landPos = stripItemsDict.Keys.ElementAt(landingIndex);
    
-        // Spin 30 times 
+        // Spin 30 times with the interval of 'timeInterval'
         for(int i = 0; i < 30; i++)
         {
             // Reset postion of strip, to give it a loop
@@ -171,11 +177,14 @@ public class Strip : MonoBehaviour
             yield return new WaitForSeconds(timeInterval);
         }
 
+        // Set the Y-position of the strip based on the matrix information
         SetYPosition(landPos);
 
+        // Set the name of the item on with the strip stopped
         stoppedOnItem = stripItemsDict[landPos];
         isRotating = false;
 
+        // Invoke the Actions, so that subscribers can perform their actions
         SpinComplete?.Invoke();
         CheckResults?.Invoke();
     }
@@ -191,9 +200,9 @@ public class Strip : MonoBehaviour
 
         // Get position on strip from dict. using landing index
         float landPos = invStripItemsDict[landingName];
-   
-        // Spin 30 times 
-        for(int i = 0; i < 30; i++)
+
+        // Spin 30 times with the interval of 'timeInterval'
+        for (int i = 0; i < 30; i++)
         {
             // Reset postion of strip, to give it a loop
             if (GetYPosition() <= -1.75f)
@@ -207,11 +216,13 @@ public class Strip : MonoBehaviour
             yield return new WaitForSeconds(timeInterval);
         }
 
+        // Set Y-position based on the names that we received from GameManager
         SetYPosition(landPos);
 
         stoppedOnItem = landingName;
         isRotating = false;
 
+        // Invoke the Actions, so that subscribers can perform their actions
         SpinComplete?.Invoke();
         CheckResults?.Invoke();
     }
@@ -224,6 +235,10 @@ public class Strip : MonoBehaviour
         transform.localPosition = new Vector2(transform.localPosition.x, startingYPos);
     }
 
+    /// <summary>
+    /// The Item on which is to be displayed when spinning stops
+    /// </summary>
+    /// <returns> Name of the item to display on slot </returns>
     public string GetStoppedOnItem()
     {
         return stoppedOnItem;

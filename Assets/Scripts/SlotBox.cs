@@ -7,10 +7,14 @@ public class SlotBox : MonoBehaviour
     public Vector2Int id;
     public Strip slotStrip;
 
+    // We don't need this now, but if we want to have a functionality
+    // where we want to change individual slot's display item, then
+    // this will be useful to check the results.
     public string currentlyShownItem = "";
 
     private void Start()
     {
+        // Set the current item shown when the strip stops spinning
         Strip.SpinComplete += () => { SetCurrentItem(); };
 
         // Check if proper strips are assigned to slots
